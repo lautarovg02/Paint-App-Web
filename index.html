@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint</title>
+    <link rel="shortcut icon" href="/TpeEntregable-3/img/iconThePage.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body onload="main()">
+    <header>
+        <div class="menu">
+            <h2>Paint</h2>
+            <img src="/TpeEntregable-3/img/pincel.png" alt="">
+            <nav>
+                <ul>
+                    <li> <button type="button" id="btn-pencil" class="btn btn-outline-light"><span><i class="fa-sharp fa-solid fa-pencil "></i></span> Lapiz</button></li>
+                    <li><button type="button" id="btn-grafitti" class="btn btn-outline-light"><span><i class="fa-solid fa-spray-can-sparkles"></i></span>Grafiti</button></li>
+                    <li><button type="button" id="btn-delete" class="btn btn-outline-light"><span><i class="fa-solid fa-eraser"></i></span>Goma de Borrar</button></li>
+                    <li> <button type="button" id="btn-paint" class="btn btn-outline-light"><span><i class="fa-solid fa-fill-drip"></i></span>Pintar</button></li>
+                    <li><button type="button" id="btn-save" class="btn btn-outline-light"><span><i class="fa-solid fa-download"></i></span>Guardar</button></li>
+                    <li><button type="button" id="btn-clear" class="btn btn-outline-light"><span><i class="fa-solid fa-broom"></i></span>Limpiar Hoja</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="zoom">
+                    <button type="button" id="btn-more-zoom" class="btn btn-outline-light"><i class="fa-solid fa-plus"></i></button>
+                    <button type="button" id="btn-less-zoom" class="btn btn-outline-light"><i class="fa-solid fa-minus"></i></button>
+                </div>
+                <canvas id="screen" width="750" height="500"></canvas>
+            </div>
+            <div class="col">
+                <h2 class="text-center text-capitalize">filtros para su imagen</h2>
+                <div class="image-filters">
+                    <div class="d-grid gap-2 col-md-5 mx-auto">
+                        <button class="btn btn-outline-light" id="btn-filter-binarization" type="button">Binarizacion</button>
+                        <button class="btn btn-outline-light" id="btn-filter-negative" type="button">Negativo</button>
+                        <button class="btn btn-outline-light" id="btn-filter-sepia" type="button">Sepia</button>
+                        <button class="btn btn-outline-light" id="btn-filter-brightness" type="button">Brillo</button>
+                    </div>
+                    <div class="d-grid gap-2 col-md-5 mx-auto">
+                        <button class="btn btn-outline-light" id="btn-edge-detection" type="button">Detección de Bordes</button>
+                        <button class="btn btn-outline-light" id="btn-filter-saturation" type="button">Saturacion</button>
+                        <button class="btn btn-outline-light" id="btn-filter-blur" type="button">Difuminar</button>
+                    </div>
+                </div>
+                <div class="file-input">
+                    <input class="btn-outline-light" type="file" id="upload-photo" name="file" />
+                    <label for="file"><span><i class="fa-regular fa-image"></i></span><span>Agregue una Imagen</span></label>
+                </div>
+            </div>
+            <div class="tools">
+                <input type="color"  class="color-picker" id="pencilColor" oninput="toolsColor = this.value">
+                <input type="range" class="pen-range" min="1" max="10" value="1" id="pencilRange"
+                    oninput="changeWidthPencil(this.value)">
+                <div onClick="changeColorPencil(this)" data-color="red" class="color-field"
+                    style="background-color: rgb(255, 0, 0)"></div>
+                <div onClick="changeColorPencil(this)" data-color="blue" class="color-field"
+                    style="background-color: rgb(0, 0, 255)"></div>
+                <div onClick="changeColorPencil(this)" data-color="yellow" class="color-field"
+                    style="background-color: rgb(255, 255, 0)"></div>
+                <div onClick="changeColorPencil(this)" data-color="green" class="color-field"
+                    style="background-color: rgb(0, 255, 0)"></div>
+                <button type="button" id="btn-undo-last" class="btn btn-outline-light"><span class="lnr lnr-undo"></span>Borrar último trazo</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+<script src="https://kit.fontawesome.com/5e81a4cec6.js" crossorigin="anonymous"></script>
+<script src="js/Image.js"></script>
+<script src="js/Pen.js"></script>
+<script src="js/App.js"></script>
+
+</html>
