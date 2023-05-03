@@ -92,7 +92,9 @@ document.getElementById('btn-clear').addEventListener('click', clearCanvas);
 
 // * Presiona el boton [Agregar imagen]
 document.getElementById('upload-photo').addEventListener('change', (e) => {
+    console.log(URL.createObjectURL(e.target.files[0]));
     let route = URL.createObjectURL(e.target.files[0]);
+    myImage = null;
     myImage = new Imagen(canvasWidth, canvasHeight , route, ctx);
 });
 
@@ -105,9 +107,6 @@ document.getElementById('btn-less-zoom').addEventListener('click', () => {zoomIn
 // * Presiona el boton [Filtro negativo]
 document.getElementById('btn-filter-negative').addEventListener('click', () =>{myImage.applyNegativeFilter();})
 
-// * Presiona el boton [Deteccion de bordes]
-document.getElementById('btn-edge-detection').addEventListener('click',() => {myImage.applyEdgeDetectionFilter()})
-
 // * Presiona el boton [Sepia]
 document.getElementById('btn-filter-sepia').addEventListener('click',() => {myImage.applySepiaFilter()})
 
@@ -117,24 +116,39 @@ document.getElementById('btn-filter-brightness').addEventListener('click',() => 
 //* Presiona el boton [Binarizacion]
 document.getElementById('btn-filter-binarization').addEventListener('click',() => {myImage.applyBinarizationFilter()})
 
+// * Presiona el boton [Deteccion de bordes]
+document.getElementById('btn-edge-detection').addEventListener('click',() => {
+    let kernel = [-1, -1, -1, -1, 8, -1, -1, -1, -1];
+    myImage.applyFilterWithKernel(kernel)}
+)
 
 //* Presiona el boton [Difuminar]
-document.getElementById('btn-filter-blur').addEventListener('click',() => {myImage.applyBlurFilter()})
+document.getElementById('btn-filter-blur').addEventListener('click',() => {
+    let kernel = [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9];
+    myImage.applyFilterWithKernel(kernel);
+});
 
+//* Presiona el boton [Enfocar]
+document.getElementById('btn-filter-focus').addEventListener('click',() => {
+    let kernel = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+    myImage.applyFilterWithKernel(kernel);
+});
+
+//* Presiona el boton [Afilado]
+document.getElementById('btn-filter-sharpening').addEventListener('click',() => {
+    let kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0];
+    myImage.applyFilterWithKernel(kernel);
+});
+
+//* Presiona el boton [Afilado]
+document.getElementById('btn-filter-profiling').addEventListener('click',() => {
+    let kernel = [-1, -1, -1, -1, 9, -1, -1, -1, -1];
+    myImage.applyFilterWithKernel(kernel);
+});
 
 // * -----------------------------
 // * Comportamiento de las funciones
 // * -----------------------------
-
-function applySaturation() {
-    if (myImage != null) {
-        let imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-        let data = imageData.data;
-        ctx.putImageData(imageData, 0, 0);
-    }else{
-        alert("Debe agregar una imagen para aplicar un filtro...")
-    }
-}
 
 function zoomIn(ctx,zoomFactor) {
     //* Guardar el estado actual del contexto de dibujo

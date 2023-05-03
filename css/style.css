@@ -37,6 +37,9 @@ button span{
     height: 15px;
 }
 
+.image-filters button{
+    margin-left: 10px;
+}
 
 button img{
     color: white;
