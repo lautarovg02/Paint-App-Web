@@ -9,6 +9,8 @@ const rect = canvas.getBoundingClientRect();
 let canvasWidth = canvas.width;
 let canvasHeight = canvas.height;
 
+// let canvasHelper = new CanvasHelper();
+
 let isDrawing = false;
 
 let restoreArray = [];
@@ -18,10 +20,8 @@ let startColor = 'white';
 let toolsColor  = 'black';
 let toolsWidth = '1'; 
 
-
 let myPen = null;
 let myImage = null;
-
 
 let btnGraffittiClick = false;
 let btnPencilClick = false;
@@ -92,7 +92,6 @@ document.getElementById('btn-clear').addEventListener('click', clearCanvas);
 
 // * Presiona el boton [Agregar imagen]
 document.getElementById('upload-photo').addEventListener('change', (e) => {
-    console.log(URL.createObjectURL(e.target.files[0]));
     let route = URL.createObjectURL(e.target.files[0]);
     myImage = null;
     myImage = new Imagen(canvasWidth, canvasHeight , route, ctx);
@@ -117,34 +116,19 @@ document.getElementById('btn-filter-brightness').addEventListener('click',() => 
 document.getElementById('btn-filter-binarization').addEventListener('click',() => {myImage.applyBinarizationFilter()})
 
 // * Presiona el boton [Deteccion de bordes]
-document.getElementById('btn-edge-detection').addEventListener('click',() => {
-    let kernel = [-1, -1, -1, -1, 8, -1, -1, -1, -1];
-    myImage.applyFilterWithKernel(kernel)}
-)
+document.getElementById('btn-edge-detection').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("edgeDetection")})
 
 //* Presiona el boton [Difuminar]
-document.getElementById('btn-filter-blur').addEventListener('click',() => {
-    let kernel = [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9];
-    myImage.applyFilterWithKernel(kernel);
-});
+document.getElementById('btn-filter-blur').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("blur");});
 
 //* Presiona el boton [Enfocar]
-document.getElementById('btn-filter-focus').addEventListener('click',() => {
-    let kernel = [0, -1, 0, -1, 5, -1, 0, -1, 0];
-    myImage.applyFilterWithKernel(kernel);
-});
+document.getElementById('btn-filter-focus').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("focus");});
 
 //* Presiona el boton [Afilado]
-document.getElementById('btn-filter-sharpening').addEventListener('click',() => {
-    let kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0];
-    myImage.applyFilterWithKernel(kernel);
-});
+document.getElementById('btn-filter-sharpening').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("sharpening");});
 
-//* Presiona el boton [Afilado]
-document.getElementById('btn-filter-profiling').addEventListener('click',() => {
-    let kernel = [-1, -1, -1, -1, 9, -1, -1, -1, -1];
-    myImage.applyFilterWithKernel(kernel);
-});
+//* Presiona el boton [Perfilado]
+document.getElementById('btn-filter-profiling').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("profiling");});
 
 // * -----------------------------
 // * Comportamiento de las funciones

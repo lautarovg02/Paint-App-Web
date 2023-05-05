@@ -7,10 +7,20 @@ class Imagen {
         this.img.src = route;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+        this.kernel;
+        this.filters = {
+            edgeDetection: { kernel : [-1, -1, -1, -1, 8, -1, -1, -1, -1]},
+            blur: { kernel : [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9]},
+            sharpening : { kernel : [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0]},
+            focus : { kernel : [0, -1, 0, -1, 5, -1, 0, -1, 0]},
+            profiling : { kernel : [-1, -1, -1, -1, 9, -1, -1, -1, -1]},
+        };
         this.img.onload = () => {
         this.draw();
         };
     }
+
+    
 
     draw() {
         this.calculateSize();
@@ -64,17 +74,17 @@ class Imagen {
         ctx.putImageData(imageData, 0, 0);
     }
 
-    applyFilterWithKernel(kernelFilter){
-        console.log(kernelFilter);
+    applyFilterAccordingToKernel(kernelFilter){
         //* getImageData = Este método devuelve un objeto ImageData que representa los datos de píxeles de la imagen.
         let imageData = this.ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
         let data = imageData.data;
         //* Creamos una nueva matriz de píxeles, con la misma longitud que la imagen original.
         let filteredPixels = new Uint8ClampedArray(data.length);
+        //* Convertir el objeto JSON en un objeto JavaScript
+        let objFilters = JSON.parse(JSON.stringify(this.filters));       
         //* Matriz de convolución que se utiliza para la detección de bordes.
-        let kernel = kernelFilter;
+        let kernel = objFilters[kernelFilter].kernel;//* Obtener la matriz correspondiente al nombre del objeto
         let kernelSize = 3; //* tamaño del kernel.
-        //* Recorremos cada píxel de la imagen, excepto los bordes.
         for (let y = 1; y < this.canvasHeight - 1; y++) {//* recorremos todos los píxeles de la imagen, excepto los bordes.
             for (let x = 1; x < this.canvasWidth - 1; x++) {//*recorremos sobre todos los píxeles de la fila actual, excepto los bordes.
                 //* Índice del píxel actual.
@@ -93,7 +103,6 @@ class Imagen {
                         let neighborR = data[neighborIndex];
                         let neighborG = data[neighborIndex + 1];
                         let neighborB = data[neighborIndex + 2];
-            
                         //* Sumamos el producto de la matriz de convolución y los componentes de color del píxel vecino.
                         r += kernelValue * neighborR;
                         g += kernelValue * neighborG;
@@ -104,7 +113,7 @@ class Imagen {
                 filteredPixels[pixelIndex] = r;
                 filteredPixels[pixelIndex + 1] = g;
                 filteredPixels[pixelIndex + 2] = b;
-                filteredPixels[pixelIndex + 3] = 255; // Valor fijo para el componente alfa.
+                filteredPixels[pixelIndex + 3] = 255; //* Valor fijo para el componente alfa.
                 }
         }
         //* Creamos una nueva imagen con los píxeles filtrados.
