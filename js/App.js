@@ -93,8 +93,12 @@ document.getElementById('btn-clear').addEventListener('click', clearCanvas);
 // * Presiona el boton [Agregar imagen]
 document.getElementById('upload-photo').addEventListener('change', (e) => {
     let route = URL.createObjectURL(e.target.files[0]);
+    console.log(route);
+    console.log("hola");
     myImage = null;
     myImage = new Imagen(canvasWidth, canvasHeight , route, ctx);
+    restoreArray.push(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
+    index++;
 });
 
 // * Presiona el boton [ + zoom ]
