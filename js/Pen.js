@@ -18,7 +18,6 @@ class Pen {
         this.posY = y;
     }
 
-
     //* Metodo encargado de dibujar el trazo
     draw(){
         this.ctx.beginPath();
@@ -50,5 +49,5 @@ class Pen {
         this.posX += Math.floor(Math.random() * 16) - 8; // movemos la posición del trazo de manera aleatoria
         this.posY += Math.floor(Math.random() * 16) - 8;
     }
-    
+
 }//* Fin de la clase PEN

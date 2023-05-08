@@ -8,6 +8,7 @@ class Imagen {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
         this.kernel;
+        this.scale = 1;
         this.filters = {
             edgeDetection: { kernel : [-1, -1, -1, -1, 8, -1, -1, -1, -1]},
             blur: { kernel : [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9]},
@@ -20,12 +21,10 @@ class Imagen {
         };
     }
 
-    
-
     draw() {
         this.calculateSize();
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        this.ctx.drawImage(this.img, 0, 0, this.width*this.scale, this.height*this.scale);
     }
 
     calculateSize() {
@@ -35,6 +34,18 @@ class Imagen {
         );
         this.width = this.img.width * ratio;
         this.height = this.img.height * ratio;
+    }
+
+    //* Aumenta el factor de escala y redibuja el dibujo
+    zoomIn() {
+        this.scale *= 2;
+        this.draw();
+    }
+
+    //* Disminuye el factor de escala y redibuja el dibujo
+    zoomOut() {
+        this.scale /= 2;
+        this.draw();
     }
 
   //*metodo encargado de aplicar un filtro negativo a la imagen

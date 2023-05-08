@@ -4,11 +4,11 @@
 // * -----------------------------
 
 const canvas = document.querySelector('#screen');
-let ctx =  canvas.getContext('2d');
+const ctx =  canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
-let canvasWidth = canvas.width;
-let canvasHeight = canvas.height;
-
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
+let scale = 1;
 // let canvasHelper = new CanvasHelper();
 
 let isDrawing = false;
@@ -102,10 +102,10 @@ document.getElementById('upload-photo').addEventListener('change', (e) => {
 });
 
 // * Presiona el boton [ + zoom ]
-document.getElementById('btn-more-zoom').addEventListener('click', () => {zoomIn(ctx,2)});
+document.getElementById('btn-more-zoom').addEventListener('click', () => {myImage.zoomIn()});
 
 // * Presiona el boton [ - zoom ]
-document.getElementById('btn-less-zoom').addEventListener('click', () => {zoomIn(ctx,0.5)});
+document.getElementById('btn-less-zoom').addEventListener('click', () => {myImage.zoomOut()});
 
 // * Presiona el boton [Filtro negativo]
 document.getElementById('btn-filter-negative').addEventListener('click', () =>{myImage.applyNegativeFilter();})
@@ -137,21 +137,6 @@ document.getElementById('btn-filter-profiling').addEventListener('click',() => {
 // * -----------------------------
 // * Comportamiento de las funciones
 // * -----------------------------
-
-function zoomIn(ctx,zoomFactor) {
-    //* Guardar el estado actual del contexto de dibujo
-    ctx.save();
-    //* Calcular las nuevas dimensiones del canvas después del zoom
-    const newWidth = canvasWidth * zoomFactor;
-    const newHeight = canvasHeight * zoomFactor;
-    //* Ajustar la escala de dibujo del contexto para hacer zoom en el dibujo
-    ctx.scale(zoomFactor, zoomFactor);
-    //* Redibujar el dibujo en las nuevas dimensiones
-    ctx.clearRect(0, 0, canvasWidth,canvasHeight);
-    ctx.drawImage(canvas, 0, 0, canvasWidth, canvasHeight, 0, 0, newWidth, newHeight);
-    //*Restaurar el estado del contexto de dibujo
-    ctx.restore();
-}
 
 //*Funcion encargada de rellena el canvas con el color que quiera el usuario
 function paintCanvas() {        
