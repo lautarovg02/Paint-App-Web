@@ -9,13 +9,6 @@ class Imagen {
         this.canvasHeight = canvasHeight;
         this.kernel;
         this.scale = 1;
-        this.filters = {
-            edgeDetection: { kernel : [-1, -1, -1, -1, 8, -1, -1, -1, -1]},
-            blur: { kernel : [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9]},
-            sharpening : { kernel : [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0]},
-            focus : { kernel : [0, -1, 0, -1, 5, -1, 0, -1, 0]},
-            profiling : { kernel : [-1, -1, -1, -1, 9, -1, -1, -1, -1]},
-        };
         this.img.onload = () => {
         this.draw();
         };
@@ -38,8 +31,33 @@ class Imagen {
 
     //* Aumenta el factor de escala y redibuja el dibujo
     zoomIn() {
-        this.scale *= 2;
+        this.scale *= 1.5;
         this.draw();
+    }
+
+    applyFilterBlur(){
+        this.kernel =  [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9];
+        this.applyFilterAccordingToKernel(this.kernel);
+    }
+
+    applyFilterSharpening(){
+        this.kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0];
+        applyFilterAccordingToKernel(this.kernel);
+    }
+
+    applyFilterEdgeDetection(){
+        this.kernel =  [-1, -1, -1, -1, 8, -1, -1, -1, -1];
+        this.applyFilterAccordingToKernel(this.kernel);
+    }
+
+    applyFilterFocus(){
+        this.kernel = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+        this.applyFilterAccordingToKernel(this.kernel);
+    }
+
+    applyFilterProfiling(){
+        this.kernel = [-1, -1, -1, -1, 9, -1, -1, -1, -1];
+        this.applyFilterAccordingToKernel(this.kernel)
     }
 
     //* Disminuye el factor de escala y redibuja el dibujo
@@ -92,9 +110,7 @@ class Imagen {
         //* Creamos una nueva matriz de píxeles, con la misma longitud que la imagen original.
         let filteredPixels = new Uint8ClampedArray(data.length);
         //* Convertir el objeto JSON en un objeto JavaScript
-        let objFilters = JSON.parse(JSON.stringify(this.filters));       
-        //* Matriz de convolución que se utiliza para la detección de bordes.
-        let kernel = objFilters[kernelFilter].kernel;//* Obtener la matriz correspondiente al nombre del objeto
+        let kernel = kernelFilter;
         let kernelSize = 3; //* tamaño del kernel.
         for (let y = 1; y < this.canvasHeight - 1; y++) {//* recorremos todos los píxeles de la imagen, excepto los bordes.
             for (let x = 1; x < this.canvasWidth - 1; x++) {//*recorremos sobre todos los píxeles de la fila actual, excepto los bordes.

@@ -41,15 +41,15 @@ canvas.addEventListener('mouseup', (e) => {
     myPen = null;
     restoreArray.push(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
     index++;
+    console.log(restoreArray);
 })
 
 canvas.addEventListener('mousemove', (e) => {
     if(isDrawing){
+        myPen.moveTo(e.offsetX,e.offsetY);
         if(btnPencilClick){
-            myPen.moveTo(e.offsetX,e.offsetY);
             myPen.draw();
         }else if(btnGraffittiClick){
-            myPen.moveTo(e.offsetX,e.offsetY);
             myPen.drawGraffiti();
         }
     }
@@ -93,19 +93,30 @@ document.getElementById('btn-clear').addEventListener('click', clearCanvas);
 // * Presiona el boton [Agregar imagen]
 document.getElementById('upload-photo').addEventListener('change', (e) => {
     let route = URL.createObjectURL(e.target.files[0]);
-    console.log(route);
-    console.log("hola");
     myImage = null;
+    myPen = null;
     myImage = new Imagen(canvasWidth, canvasHeight , route, ctx);
-    restoreArray.push(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
+    restoreArray.push(ctx.getImageData(0, 0,canvasWidth, canvasHeight));
     index++;
 });
 
 // * Presiona el boton [ + zoom ]
-document.getElementById('btn-more-zoom').addEventListener('click', () => {myImage.zoomIn()});
+document.getElementById('btn-more-zoom').addEventListener('click', () => {
+    if(myImage){
+        myImage.zoomIn()
+    }else if(myPen){
+        myPen.zoomIn();
+    }
+});
 
 // * Presiona el boton [ - zoom ]
-document.getElementById('btn-less-zoom').addEventListener('click', () => {myImage.zoomOut()});
+document.getElementById('btn-less-zoom').addEventListener('click', () => {    
+    if(myImage){    
+        myImage.zoomOut()
+    }else if(myPen){
+        myPen.zoomOut();
+    }
+});
 
 // * Presiona el boton [Filtro negativo]
 document.getElementById('btn-filter-negative').addEventListener('click', () =>{myImage.applyNegativeFilter();})
@@ -120,19 +131,19 @@ document.getElementById('btn-filter-brightness').addEventListener('click',() => 
 document.getElementById('btn-filter-binarization').addEventListener('click',() => {myImage.applyBinarizationFilter()})
 
 // * Presiona el boton [Deteccion de bordes]
-document.getElementById('btn-edge-detection').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("edgeDetection")})
+document.getElementById('btn-edge-detection').addEventListener('click',() => {myImage.applyFilterEdgeDetection()})
 
 //* Presiona el boton [Difuminar]
-document.getElementById('btn-filter-blur').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("blur");});
+document.getElementById('btn-filter-blur').addEventListener('click',() => {myImage.applyFilterBlur();});
 
 //* Presiona el boton [Enfocar]
-document.getElementById('btn-filter-focus').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("focus");});
+document.getElementById('btn-filter-focus').addEventListener('click',() => {myImage.applyFilterFocus();});
 
 //* Presiona el boton [Afilado]
-document.getElementById('btn-filter-sharpening').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("sharpening");});
+document.getElementById('btn-filter-sharpening').addEventListener('click',() => {myImage.applyFilterSharpening();});
 
 //* Presiona el boton [Perfilado]
-document.getElementById('btn-filter-profiling').addEventListener('click',() => {myImage.applyFilterAccordingToKernel("profiling");});
+document.getElementById('btn-filter-profiling').addEventListener('click',() => {myImage.applyFilterProfiling();});
 
 // * -----------------------------
 // * Comportamiento de las funciones
@@ -151,10 +162,12 @@ function deleteLastStroke(){
     if(index <= 0){
         clearCanvas();
     }else{
+        console.log(restoreArray + "delete1");
         //*Si hay mas de uno
         index--;//*Decrece en uno el index
         restoreArray.pop(); //* Removemos el ultimo elemento del array 
         ctx.putImageData(restoreArray[index],0,0); //* Restauramos la imagen desde la ultima posicion
+        console.log(restoreArray + "delete2");
     }
 }
 
