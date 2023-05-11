@@ -1,34 +1,99 @@
 "use strict"
 // * -----------------------------
-// * Cuerpo principal del proyecto
+// * Cuerpo principal del proyecto.
 // * -----------------------------
-
 const canvas = document.querySelector('#screen');
 const ctx =  canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
-let scale = 1;
-// let canvasHelper = new CanvasHelper();
+const scale = 1;
+const startColor = 'white';
 
+let toolsColor;
+let toolsWidth = '1'; 
 let isDrawing = false;
-
 let restoreArray = [];
 let index = -1;
-
-let startColor = 'white';
-let toolsColor  = 'black';
-let toolsWidth = '1'; 
-
 let myPen = null;
 let myImage = null;
-
+let imageWithFilter = null;
 let btnGraffittiClick = false;
 let btnPencilClick = false;
 let btnDeleteClick = false;
 
 // * -----------------------------
-// * Comportamiento del mouse
+// * Botones.
+// * -----------------------------
+
+const btnPencil = document.getElementById('btn-pencil');
+const btnPaint = document.getElementById('btn-paint');
+const btnGraffitti = document.getElementById('btn-grafitti');
+const btnDelete = document.getElementById('btn-delete');
+const btnSave = document.getElementById('btn-save');
+const btnUndoLast = document.getElementById('btn-undo-last');
+const btnClear = document.getElementById('btn-clear');
+const uploadPhoto = document.getElementById('upload-photo');
+const btnMoreZoom = document.getElementById('btn-more-zoom');
+const btnLessZoom = document.getElementById('btn-less-zoom');
+const btnFilterNegative = document.getElementById('btn-filter-negative');
+const btnFilterSepia = document.getElementById('btn-filter-sepia');
+const btnFilterBrightness = document.getElementById('btn-filter-brightness');
+const btnFilterBinarization= document.getElementById('btn-filter-binarization');
+const btnFilterEdgeDetection = document.getElementById('btn-edge-detection');
+const btnFilterBlur = document.getElementById('btn-filter-blur');
+const btnFilterFocus = document.getElementById('btn-filter-focus');
+const btnFilterSharpening= document.getElementById('btn-filter-sharpening');
+const btnFilterProfiling = document.getElementById('btn-filter-profiling');
+
+
+// * -----------------------------
+// * Constantes que definen funciones que se ejecutarán cuando se dispare un evento determinado.
+// * -----------------------------
+
+//* La constante " handleZoomIn " define una funcion que aumento el zoom de una imagen
+const handleZoomIn = () => {
+    if (myImage) {
+        myImage.zoomIn();
+    }
+};
+//* La constante " handleZoomOut " define una funcion que disminuye el zoom de una imagen
+const handleZoomOut = () => {
+    if (myImage) {
+        myImage.zoomOut();
+    }
+};
+/* 
+*La constante " handlePencilClick " define una funcion que establece el valor de la variable "btnPencilClick" en true
+* y el valor de la variable "btnGraffittiClick" en false, para usar "activar" el trazo de lapiz*/
+const handlePencilClick = () => {
+    toolsColor = 'black';
+    btnPencilClick = true;
+    btnGraffittiClick = false;
+}
+/* 
+*La constante " handleGraffittiClick " define una funcion que hace a la inversa lo que hace la funcion "handlePencilClick".
+*En vez de "activar" el trazo de lapiz, activa el de graffiti */
+const handleGraffittiClick = () => {
+    toolsColor = 'black';
+    btnGraffittiClick = true;
+    btnPencilClick = false;
+};
+/*
+*La constante "handleDeleteClick" define una funcion que cambia el color del trazo del Lapiz a blanco,
+*para dibujar en blanco y dar la sensacion de borrar*/
+const handleDeleteClick = () => {
+    btnPencilClick = true;
+    toolsColor = startColor;
+};
+
+//*La constante "changeWidthPencil" define una funcion encargada de cambiar el ancho de una herramienta
+const changeWidthPencil = (width) =>{
+    toolsWidth = width;
+}
+
+// * -----------------------------
+// * Comportamiento del mouse.
 // * -----------------------------
 
 canvas.addEventListener('mousedown', (e) => {
@@ -41,7 +106,6 @@ canvas.addEventListener('mouseup', (e) => {
     myPen = null;
     restoreArray.push(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
     index++;
-    console.log(restoreArray);
 })
 
 canvas.addEventListener('mousemove', (e) => {
@@ -56,42 +120,11 @@ canvas.addEventListener('mousemove', (e) => {
 })
 
 // * --------------------------------------------------
-// * Comportamiento de los botones
+// * Comportamiento de los botones.
 // * -------------------------------------------------
 
-// * Presiona el boton [lapiz]
-document.getElementById('btn-pencil').addEventListener('click', () =>{
-    btnPencilClick = true;
-    btnGraffittiClick = false;
-});
-
-// * Presiona el boton [Pintar]
-document.getElementById('btn-paint').addEventListener('click', paintCanvas);
-
-// * Presiona el boton [grafitti]
-document.getElementById('btn-grafitti').addEventListener('click', () =>{
-    btnGraffittiClick = true;
-    btnPencilClick = false;
-});
-
-// * Presiona el boton [borrar]
-document.getElementById('btn-delete').addEventListener('click', () =>{
-    btnPencilClick = true;
-    toolsColor = startColor;
-});
-
-// * Presiona el boton [Guardar]
-document.getElementById('btn-save').addEventListener('click', exportAsImage);
-
-// * Presiona el boton [borrar ultimo trazo]
-document.getElementById('btn-undo-last').addEventListener('click', deleteLastStroke);
-
-// * Presiona el boton [limpiar hoja]
-document.getElementById('btn-clear').addEventListener('click', clearCanvas);
-
-
 // * Presiona el boton [Agregar imagen]
-document.getElementById('upload-photo').addEventListener('change', (e) => {
+uploadPhoto.addEventListener('change', (e) => {
     let route = URL.createObjectURL(e.target.files[0]);
     myImage = null;
     myPen = null;
@@ -101,57 +134,70 @@ document.getElementById('upload-photo').addEventListener('change', (e) => {
 });
 
 // * Presiona el boton [ + zoom ]
-document.getElementById('btn-more-zoom').addEventListener('click', () => {
-    if(myImage){
-        myImage.zoomIn()
-    }else if(myPen){
-        myPen.zoomIn();
-    }
-});
+addButtonClickEvent(btnMoreZoom,handleZoomIn);
+
+// * Presiona el boton [lapiz]
+addButtonClickEvent(btnPencil,handlePencilClick);
+
+// * Presiona el boton [Pintar]
+addButtonClickEvent(btnPaint,paintCanvas);
+
+// * Presiona el boton [grafitti]
+addButtonClickEvent(btnGraffitti,handleGraffittiClick);
+
+// * Presiona el boton [borrar]
+addButtonClickEvent(btnDelete,handleDeleteClick);
 
 // * Presiona el boton [ - zoom ]
-document.getElementById('btn-less-zoom').addEventListener('click', () => {    
-    if(myImage){    
-        myImage.zoomOut()
-    }else if(myPen){
-        myPen.zoomOut();
-    }
-});
+addButtonClickEvent(btnLessZoom,handleZoomOut);
+
+// * Presiona el boton [Guardar]
+addButtonClickEvent(btnSave,exportAsImage);
+
+// * Presiona el boton [borrar ultimo trazo]
+addButtonClickEvent(btnClear,clearCanvas);
 
 // * Presiona el boton [Filtro negativo]
-document.getElementById('btn-filter-negative').addEventListener('click', () =>{myImage.applyNegativeFilter();})
+addButtonClickEvent(btnFilterNegative, () => {myImage.applyNegativeFilter();});
 
 // * Presiona el boton [Sepia]
-document.getElementById('btn-filter-sepia').addEventListener('click',() => {myImage.applySepiaFilter()})
+addButtonClickEvent(btnFilterSepia, () => {myImage.applySepiaFilter();});
 
 //* Presiona el boton [Brillo]
-document.getElementById('btn-filter-brightness').addEventListener('click',() => {myImage.applyBrightness()})
+addButtonClickEvent(btnFilterBrightness, () => {myImage.applyBrightness();});
 
 //* Presiona el boton [Binarizacion]
-document.getElementById('btn-filter-binarization').addEventListener('click',() => {myImage.applyBinarizationFilter()})
+addButtonClickEvent(btnFilterBinarization, () => {myImage.applyBinarizationFilter();});
 
 // * Presiona el boton [Deteccion de bordes]
-document.getElementById('btn-edge-detection').addEventListener('click',() => {myImage.applyFilterEdgeDetection()})
+addButtonClickEvent(btnFilterEdgeDetection, () => {myImage.applyFilterEdgeDetection();});
 
 //* Presiona el boton [Difuminar]
-document.getElementById('btn-filter-blur').addEventListener('click',() => {myImage.applyFilterBlur();});
+addButtonClickEvent(btnFilterBlur, () => {myImage.applyFilterBlur();});
 
 //* Presiona el boton [Enfocar]
-document.getElementById('btn-filter-focus').addEventListener('click',() => {myImage.applyFilterFocus();});
+addButtonClickEvent(btnFilterFocus, () => {myImage.applyFilterFocus();});
 
 //* Presiona el boton [Afilado]
-document.getElementById('btn-filter-sharpening').addEventListener('click',() => {myImage.applyFilterSharpening();});
+addButtonClickEvent(btnFilterSharpening , () => {myImage.applyFilterSharpening();});
 
 //* Presiona el boton [Perfilado]
-document.getElementById('btn-filter-profiling').addEventListener('click',() => {myImage.applyFilterProfiling();});
+addButtonClickEvent(btnFilterProfiling, () => {myImage.applyFilterProfiling();});
 
 // * -----------------------------
-// * Comportamiento de las funciones
+// * Comportamiento de las funciones.
 // * -----------------------------
 
+//*Esta es una función genérica para agregar un evento de clic a los botones de filtro
+function addButtonClickEvent(button, functionX ){
+        button.addEventListener('click', functionX);
+}
 //*Funcion encargada de rellena el canvas con el color que quiera el usuario
 function paintCanvas() {        
         //* Rellenamos todo el canvas con el color seleccionado en la paleta de colores
+        if(toolsColor == startColor) {
+            toolsColor = 'black';
+        }
         ctx.fillStyle = toolsColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -162,12 +208,10 @@ function deleteLastStroke(){
     if(index <= 0){
         clearCanvas();
     }else{
-        console.log(restoreArray + "delete1");
         //*Si hay mas de uno
         index--;//*Decrece en uno el index
         restoreArray.pop(); //* Removemos el ultimo elemento del array 
         ctx.putImageData(restoreArray[index],0,0); //* Restauramos la imagen desde la ultima posicion
-        console.log(restoreArray + "delete2");
     }
 }
 
@@ -197,17 +241,8 @@ function changeColorPencil(element){
     toolsColor = newColor;
 }
 
-// *Funcion encargada de cambiar el ancho de una herramienta
-function changeWidthPencil(width){
-    toolsWidth = width;
-}
-
-function rgbAHex(r,g,b){
-    return((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
-
 // * -----------------------------
-// * Entrada principal del proyecto
+// * Entrada principal del proyecto.
 // * -----------------------------
 
 function main(){

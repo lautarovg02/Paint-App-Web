@@ -42,7 +42,7 @@ class Imagen {
 
     applyFilterSharpening(){
         this.kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0];
-        applyFilterAccordingToKernel(this.kernel);
+        this.applyFilterAccordingToKernel(this.kernel);
     }
 
     applyFilterEdgeDetection(){
