@@ -1,7 +1,8 @@
 "use strict";
 
 class Imagen {
-    constructor(canvasWidth, canvasHeight, route, ctx) {
+    constructor(canvas, canvasWidth, canvasHeight, route, ctx) {
+        this.canvas = canvas;
         this.ctx = ctx;
         this.img = new Image();
         this.img.src = route;
@@ -27,6 +28,12 @@ class Imagen {
         );
         this.width = this.img.width * ratio;
         this.height = this.img.height * ratio;
+    }
+
+  //* Disminuye el factor de escala y redibuja el dibujo
+    zoomOut() {
+        this.scale /= 2;
+        this.draw();
     }
 
     //* Aumenta el factor de escala y redibuja el dibujo
@@ -58,12 +65,6 @@ class Imagen {
     applyFilterProfiling(){
         this.kernel = [-1, -1, -1, -1, 9, -1, -1, -1, -1];
         this.applyFilterAccordingToKernel(this.kernel)
-    }
-
-    //* Disminuye el factor de escala y redibuja el dibujo
-    zoomOut() {
-        this.scale /= 2;
-        this.draw();
     }
 
   //*metodo encargado de aplicar un filtro negativo a la imagen
@@ -158,7 +159,7 @@ class Imagen {
         for (let i = 0; i < data.length; i += 4) {
           //* Calcular la luminosidad del píxel
             let luminosity = (data[i] + data[i + 1] + data[i + 2]) / 3; 
-            //* Binarizar el píxel
+            //* Determinamos segun la luminosidad que le set el píxel
             if (luminosity >= 128) {
                 data[i] = data[i + 1] = data[i + 2] = 255; // Si es blanco
             } else {

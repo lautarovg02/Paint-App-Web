@@ -46,23 +46,19 @@ const btnFilterFocus = document.getElementById('btn-filter-focus');
 const btnFilterSharpening= document.getElementById('btn-filter-sharpening');
 const btnFilterProfiling = document.getElementById('btn-filter-profiling');
 
-
 // * -----------------------------
 // * Constantes que definen funciones que se ejecutarán cuando se dispare un evento determinado.
 // * -----------------------------
 
 //* La constante " handleZoomIn " define una funcion que aumento el zoom de una imagen
 const handleZoomIn = () => {
-    if (myImage) {
-        myImage.zoomIn();
-    }
+    imageWithFilter ? imageWithFilter.zoomIn() : myImage.zoomIn();
 };
 //* La constante " handleZoomOut " define una funcion que disminuye el zoom de una imagen
 const handleZoomOut = () => {
-    if (myImage) {
-        myImage.zoomOut();
-    }
+    imageWithFilter ? imageWithFilter.zoomOut() : myImage.zoomOut();
 };
+
 /* 
 *La constante " handlePencilClick " define una funcion que establece el valor de la variable "btnPencilClick" en true
 * y el valor de la variable "btnGraffittiClick" en false, para usar "activar" el trazo de lapiz*/
@@ -128,10 +124,11 @@ uploadPhoto.addEventListener('change', (e) => {
     let route = URL.createObjectURL(e.target.files[0]);
     myImage = null;
     myPen = null;
-    myImage = new Imagen(canvasWidth, canvasHeight , route, ctx);
-    restoreArray.push(ctx.getImageData(0, 0,canvasWidth, canvasHeight));
-    index++;
+    myImage = new Imagen(canvas, canvasWidth, canvasHeight, route, ctx);
 });
+
+// * Presiona el boton [Limpiar Hoja]
+addButtonClickEvent(btnClear,clearCanvas);
 
 // * Presiona el boton [ + zoom ]
 addButtonClickEvent(btnMoreZoom,handleZoomIn);
@@ -155,34 +152,52 @@ addButtonClickEvent(btnLessZoom,handleZoomOut);
 addButtonClickEvent(btnSave,exportAsImage);
 
 // * Presiona el boton [borrar ultimo trazo]
-addButtonClickEvent(btnClear,clearCanvas);
+addButtonClickEvent(btnUndoLast,deleteLastStroke);
 
 // * Presiona el boton [Filtro negativo]
-addButtonClickEvent(btnFilterNegative, () => {myImage.applyNegativeFilter();});
+addButtonClickEvent(btnFilterNegative, () => {
+    imageWithFilter = myImage;
+    imageWithFilter.applyNegativeFilter();});
 
 // * Presiona el boton [Sepia]
-addButtonClickEvent(btnFilterSepia, () => {myImage.applySepiaFilter();});
+addButtonClickEvent(btnFilterSepia, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applySepiaFilter();});
 
 //* Presiona el boton [Brillo]
-addButtonClickEvent(btnFilterBrightness, () => {myImage.applyBrightness();});
+addButtonClickEvent(btnFilterBrightness, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyBrightness();});
 
 //* Presiona el boton [Binarizacion]
-addButtonClickEvent(btnFilterBinarization, () => {myImage.applyBinarizationFilter();});
+addButtonClickEvent(btnFilterBinarization, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyBinarizationFilter();});
 
 // * Presiona el boton [Deteccion de bordes]
-addButtonClickEvent(btnFilterEdgeDetection, () => {myImage.applyFilterEdgeDetection();});
+addButtonClickEvent(btnFilterEdgeDetection, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterEdgeDetection();});
 
 //* Presiona el boton [Difuminar]
-addButtonClickEvent(btnFilterBlur, () => {myImage.applyFilterBlur();});
+addButtonClickEvent(btnFilterBlur, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterBlur();});
 
 //* Presiona el boton [Enfocar]
-addButtonClickEvent(btnFilterFocus, () => {myImage.applyFilterFocus();});
+addButtonClickEvent(btnFilterFocus, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterFocus();});
 
 //* Presiona el boton [Afilado]
-addButtonClickEvent(btnFilterSharpening , () => {myImage.applyFilterSharpening();});
+addButtonClickEvent(btnFilterSharpening , () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterSharpening();});
 
 //* Presiona el boton [Perfilado]
-addButtonClickEvent(btnFilterProfiling, () => {myImage.applyFilterProfiling();});
+addButtonClickEvent(btnFilterProfiling, () => { 
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterProfiling();});
 
 // * -----------------------------
 // * Comportamiento de las funciones.
