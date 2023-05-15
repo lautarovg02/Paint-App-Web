@@ -10,7 +10,7 @@ const canvasHeight = canvas.height;
 const scale = 1;
 const startColor = 'white';
 
-let toolsColor;
+let toolsColor = 'black';
 let toolsWidth = '1'; 
 let isDrawing = false;
 let restoreArray = [];
@@ -26,6 +26,7 @@ let btnDeleteClick = false;
 // * Botones.
 // * -----------------------------
 
+const pencilRange = document.getElementById('pencilRange');
 const btnPencil = document.getElementById('btn-pencil');
 const btnPaint = document.getElementById('btn-paint');
 const btnGraffitti = document.getElementById('btn-grafitti');
@@ -50,10 +51,10 @@ const btnFilterSaturation = document.getElementById('btn-filter-saturation');
 // * -----------------------------
 
 /* 
+
 *La constante " handlePencilClick " define una funcion que establece el valor de la variable "btnPencilClick" en true
-* y el valor de la variable "btnGraffittiClick" en false, para usar "activar" el trazo de lapiz*/
+* y el valor de la variable "btnGraffittiClick" en false, para  "activar" el trazo de lapiz*/
 const handlePencilClick = () => {
-    toolsColor = 'black';
     btnPencilClick = true;
     btnGraffittiClick = false;
 }
@@ -61,7 +62,6 @@ const handlePencilClick = () => {
 *La constante " handleGraffittiClick " define una funcion que hace a la inversa lo que hace la funcion "handlePencilClick".
 *En vez de "activar" el trazo de lapiz, activa el de graffiti */
 const handleGraffittiClick = () => {
-    toolsColor = 'black';
     btnGraffittiClick = true;
     btnPencilClick = false;
 };
