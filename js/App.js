@@ -34,8 +34,6 @@ const btnSave = document.getElementById('btn-save');
 const btnUndoLast = document.getElementById('btn-undo-last');
 const btnClear = document.getElementById('btn-clear');
 const uploadPhoto = document.getElementById('upload-photo');
-const btnMoreZoom = document.getElementById('btn-more-zoom');
-const btnLessZoom = document.getElementById('btn-less-zoom');
 const btnFilterNegative = document.getElementById('btn-filter-negative');
 const btnFilterSepia = document.getElementById('btn-filter-sepia');
 const btnFilterBrightness = document.getElementById('btn-filter-brightness');
@@ -45,19 +43,11 @@ const btnFilterBlur = document.getElementById('btn-filter-blur');
 const btnFilterFocus = document.getElementById('btn-filter-focus');
 const btnFilterSharpening= document.getElementById('btn-filter-sharpening');
 const btnFilterProfiling = document.getElementById('btn-filter-profiling');
+const btnFilterSaturation = document.getElementById('btn-filter-saturation');
 
 // * -----------------------------
 // * Constantes que definen funciones que se ejecutarán cuando se dispare un evento determinado.
 // * -----------------------------
-
-//* La constante " handleZoomIn " define una funcion que aumento el zoom de una imagen
-const handleZoomIn = () => {
-    imageWithFilter ? imageWithFilter.zoomIn() : myImage.zoomIn();
-};
-//* La constante " handleZoomOut " define una funcion que disminuye el zoom de una imagen
-const handleZoomOut = () => {
-    imageWithFilter ? imageWithFilter.zoomOut() : myImage.zoomOut();
-};
 
 /* 
 *La constante " handlePencilClick " define una funcion que establece el valor de la variable "btnPencilClick" en true
@@ -130,9 +120,6 @@ uploadPhoto.addEventListener('change', (e) => {
 // * Presiona el boton [Limpiar Hoja]
 addButtonClickEvent(btnClear,clearCanvas);
 
-// * Presiona el boton [ + zoom ]
-addButtonClickEvent(btnMoreZoom,handleZoomIn);
-
 // * Presiona el boton [lapiz]
 addButtonClickEvent(btnPencil,handlePencilClick);
 
@@ -145,14 +132,16 @@ addButtonClickEvent(btnGraffitti,handleGraffittiClick);
 // * Presiona el boton [borrar]
 addButtonClickEvent(btnDelete,handleDeleteClick);
 
-// * Presiona el boton [ - zoom ]
-addButtonClickEvent(btnLessZoom,handleZoomOut);
-
 // * Presiona el boton [Guardar]
 addButtonClickEvent(btnSave,exportAsImage);
 
 // * Presiona el boton [borrar ultimo trazo]
 addButtonClickEvent(btnUndoLast,deleteLastStroke);
+
+// * Presiona el boton [Filtro saturation]
+addButtonClickEvent(btnFilterSaturation, () => {
+    imageWithFilter = myImage;
+    imageWithFilter.applyFilterSaturation();});
 
 // * Presiona el boton [Filtro negativo]
 addButtonClickEvent(btnFilterNegative, () => {
