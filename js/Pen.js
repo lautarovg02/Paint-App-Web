@@ -1,13 +1,45 @@
 "use strict";
 class Pen {
 
-    constructor(posX, posY, fill, ctx, estilo) {
+    /**
+     * @constructor
+     * @param {number} posX 
+     * @param {number} posY 
+     * @param {String} fill 
+     * @param {CanvasRenderingContext2D} ctx 
+     * @param {number} style 
+     * @see ctx - https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D 
+     */
+
+    constructor(posX, posY, fill, ctx, style) {
+        /**
+         * @type antX -{number}
+         */
         this.antX = posX;
+        /**
+         * @type antY - {number}
+         */
         this.antY = posY;
+        /**
+         * posX
+         * @type{number}
+         */
         this.posX = posX;
+        /**
+         * @type posY - {number}
+         */
         this.posY = posY;
+        /**
+         * @type ctx - {CanvasRenderingContext2D}
+         */
         this.ctx = ctx;
-        this.estilo = estilo;
+        /**
+         * @type  style - {CanvasRenderingContext2D} 
+         */
+        this.style = style;
+        /**
+         * 
+         */
         this.fill = fill;
     }
 
@@ -18,11 +50,14 @@ class Pen {
         this.posY = y;
     }
 
-    //* Metodo encargado de dibujar el trazo
+    /**
+    *@author Lautaro Gallo https://github.com/lautarovg02
+    *@description Method in charge of drawing the stroke
+    */
     draw(){
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.fill;
-        this.ctx.lineWidth = this.estilo;
+        this.ctx.lineWidth = this.style;
         this.ctx.lineCap='round';
         this.ctx.lineJoin='round';
         this.ctx.blur = 'flat';
@@ -33,11 +68,14 @@ class Pen {
         this.ctx.closePath();
     }
 
-    //* Metodo encargado de dibujar el trazo, simulando un trazo tipo grafitti
+    /**
+    *@author Lautaro Gallo https://github.com/lautarovg02
+    *@description Method in charge of drawing the stroke, simulating a graffiti-like stroke
+    */
     drawGraffiti(){
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.fill;
-        this.ctx.lineWidth = this.estilo + 1;
+        this.ctx.lineWidth = this.style + 1;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
         this.ctx.shadowColor = this.fill;
@@ -46,8 +84,8 @@ class Pen {
         this.ctx.lineTo(this.posX, this.posY);
         this.ctx.stroke();
         this.ctx.closePath();
-        this.posX += Math.floor(Math.random() * 16) - 8; // movemos la posición del trazo de manera aleatoria
+        this.posX += Math.floor(Math.random() * 16) - 8;
         this.posY += Math.floor(Math.random() * 16) - 8;
     }
 
-}//* Fin de la clase PEN
+}
