@@ -233,7 +233,6 @@ class Imagen {
             
             if (max !== min) {
                 saturation = 0.5 * ((max + min) / 255); //*Formula to calculate the saturation value of each pixel.
-                saturation = 0.5 * ((max + min) / 255); //*Formula to calculate the saturation value of each pixel.
             }
             
             let factor = (saturacionAmount - 1) * 0.5; //*Formula for scale factor .
@@ -270,9 +269,7 @@ class Imagen {
 
             if (luminosity >= 128) {
                 data[i] = data[i + 1] = data[i + 2] = 255; //*If it is white.
-                data[i] = data[i + 1] = data[i + 2] = 255; //*If it is white.
             } else {
-                data[i] = data[i + 1] = data[i + 2] = 0; //*If it is black.
                 data[i] = data[i + 1] = data[i + 2] = 0; //*If it is black.
             }
 
@@ -289,6 +286,7 @@ class Imagen {
     applySepiaFilter(){
         let imageData = ctx.getImageData(0,0,this.canvasWidth,this.canvasHeight); 
         let data = imageData.data;
+        
         
         for(let pixel = 0; pixel < data.length; pixel+=4){ 
             let r = data[pixel] ;

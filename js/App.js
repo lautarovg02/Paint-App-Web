@@ -1,15 +1,24 @@
 "use strict"
 // * -----------------------------
-// * Cuerpo principal del proyecto.
+// * The principal body of the proyect.
 // * -----------------------------
 const canvas = document.querySelector('#screen');
+/**
+ * @type {CanvasRenderingContext2D} ctx
+ * @see ctx - https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D  canvasWidth
+ */
 const ctx =  canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
+/**
+ * @type {number} canvasWidth
+ */
 const canvasWidth = canvas.width;
+/**
+ * @type {number} canvasHeight
+ */
 const canvasHeight = canvas.height;
 const scale = 1;
 const startColor = 'white';
-
 let toolsColor = 'black';
 let toolsWidth = '1'; 
 let isDrawing = false;
@@ -23,14 +32,14 @@ let btnPencilClick = false;
 let btnDeleteClick = false;
 
 // * -----------------------------
-// * Botones.
+// * Buttons.
 // * -----------------------------
 
 const pencilRange = document.getElementById('pencilRange');
 const btnPencil = document.getElementById('btn-pencil');
 const btnPaint = document.getElementById('btn-paint');
 const btnGraffitti = document.getElementById('btn-grafitti');
-const btnDelete = document.getElementById('btn-delete');
+const btnEraser = document.getElementById('btn-eraser');
 const btnSave = document.getElementById('btn-save');
 const btnUndoLast = document.getElementById('btn-undo-last');
 const btnClear = document.getElementById('btn-clear');
@@ -47,39 +56,49 @@ const btnFilterProfiling = document.getElementById('btn-filter-profiling');
 const btnFilterSaturation = document.getElementById('btn-filter-saturation');
 
 // * -----------------------------
-// * Constantes que definen funciones que se ejecutarán cuando se dispare un evento determinado.
+// * Constants defining functions
 // * -----------------------------
 
-/* 
-
-*La constante " handlePencilClick " define una funcion que establece el valor de la variable "btnPencilClick" en true
-* y el valor de la variable "btnGraffittiClick" en false, para  "activar" el trazo de lapiz*/
+/** 
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description define a function that sets the value of the variable 'btnPencilClick' to true 
+    * and the value of the variable 'btnGraffitiClick' to false, to 'activate' the pencil stroke.
+ */
 const handlePencilClick = () => {
     btnPencilClick = true;
     btnGraffittiClick = false;
 }
-/* 
-*La constante " handleGraffittiClick " define una funcion que hace a la inversa lo que hace la funcion "handlePencilClick".
-*En vez de "activar" el trazo de lapiz, activa el de graffiti */
+
+/** 
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description  define a function that sets the value of the variable 'btnGraffitiClick' to true 
+    * and the value of the variable 'btnPencilClick' to false, to 'activate' the pencil stroke.
+ */
 const handleGraffittiClick = () => {
     btnGraffittiClick = true;
     btnPencilClick = false;
 };
-/*
-*La constante "handleDeleteClick" define una funcion que cambia el color del trazo del Lapiz a blanco,
-*para dibujar en blanco y dar la sensacion de borrar*/
+
+/** 
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description defines a function that changes the color of the pencil stroke to white,
+    *to draw in white and give the sensation of erasing 
+ */
 const handleDeleteClick = () => {
     btnPencilClick = true;
     toolsColor = startColor;
 };
 
-//*La constante "changeWidthPencil" define una funcion encargada de cambiar el ancho de una herramienta
+/** 
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description defines a function in charge of changing the width of a tool
+ */
 const changeWidthPencil = (width) =>{
     toolsWidth = width;
 }
 
 // * -----------------------------
-// * Comportamiento del mouse.
+// * Behaviour of the mouse.
 // * -----------------------------
 
 canvas.addEventListener('mousedown', (e) => {
@@ -106,10 +125,10 @@ canvas.addEventListener('mousemove', (e) => {
 })
 
 // * --------------------------------------------------
-// * Comportamiento de los botones.
+// * Behaviour of the buttons.
 // * -------------------------------------------------
 
-// * Presiona el boton [Agregar imagen]
+// *Pressed the button [add image]
 uploadPhoto.addEventListener('change', (e) => {
     let route = URL.createObjectURL(e.target.files[0]);
     myImage = null;
@@ -117,88 +136,96 @@ uploadPhoto.addEventListener('change', (e) => {
     myImage = new Imagen(canvas, canvasWidth, canvasHeight, route, ctx);
 });
 
-// * Presiona el boton [Limpiar Hoja]
+//* Pressed the button [Clean Sheet]
 addButtonClickEvent(btnClear,clearCanvas);
 
-// * Presiona el boton [lapiz]
+//* Pressed the button [Pencil]
 addButtonClickEvent(btnPencil,handlePencilClick);
 
-// * Presiona el boton [Pintar]
+//* Pressed the button [Paint]
 addButtonClickEvent(btnPaint,paintCanvas);
 
-// * Presiona el boton [grafitti]
+//* Pressed the button [grafitti]
 addButtonClickEvent(btnGraffitti,handleGraffittiClick);
 
-// * Presiona el boton [borrar]
-addButtonClickEvent(btnDelete,handleDeleteClick);
+//* Pressed the button [Eraser]
+addButtonClickEvent(btnEraser,handleDeleteClick);
 
-// * Presiona el boton [Guardar]
+//* Pressed the button [Save]
 addButtonClickEvent(btnSave,exportAsImage);
 
-// * Presiona el boton [borrar ultimo trazo]
+//* Pressed the button [Delete the last stroke]
 addButtonClickEvent(btnUndoLast,deleteLastStroke);
 
-// * Presiona el boton [Filtro saturation]
+//* Pressed the button [Saturation filter]
 addButtonClickEvent(btnFilterSaturation, () => {
     imageWithFilter = myImage;
     imageWithFilter.applyFilterSaturation();});
 
-// * Presiona el boton [Filtro negativo]
+//* Pressed the button [Negative filter]
 addButtonClickEvent(btnFilterNegative, () => {
     imageWithFilter = myImage;
     imageWithFilter.applyNegativeFilter();});
 
-// * Presiona el boton [Sepia]
+//* Pressed the button [Sepia]
 addButtonClickEvent(btnFilterSepia, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applySepiaFilter();});
 
-//* Presiona el boton [Brillo]
+//* Pressed the button [Brightness]
 addButtonClickEvent(btnFilterBrightness, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyBrightness();});
 
-//* Presiona el boton [Binarizacion]
+//* Pressed the button [Binarizacion]
 addButtonClickEvent(btnFilterBinarization, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyBinarizationFilter();});
 
-// * Presiona el boton [Deteccion de bordes]
+//* Pressed the button [Edge detection]
 addButtonClickEvent(btnFilterEdgeDetection, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyFilterEdgeDetection();});
 
-//* Presiona el boton [Difuminar]
+//* Pressed the button [Blur]
 addButtonClickEvent(btnFilterBlur, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyFilterBlur();});
 
-//* Presiona el boton [Enfocar]
+//* Pressed the button [Focus]
 addButtonClickEvent(btnFilterFocus, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyFilterFocus();});
 
-//* Presiona el boton [Afilado]
+//* Pressed the button [Sharpening]
 addButtonClickEvent(btnFilterSharpening , () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyFilterSharpening();});
 
-//* Presiona el boton [Perfilado]
+//* Pressed the button [Profiling]
 addButtonClickEvent(btnFilterProfiling, () => { 
     imageWithFilter = myImage;
     imageWithFilter.applyFilterProfiling();});
 
 // * -----------------------------
-// * Comportamiento de las funciones.
+// * Behaviour of the functions.
 // * -----------------------------
 
-//*Esta es una función genérica para agregar un evento de clic a los botones de filtro
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description This is a generic function to add a click event to the filter buttons.
+ * @param {HTMLElement} button 
+ * @param {ArrowFunction}  function x This is anonymous function 
+ */
 function addButtonClickEvent(button, functionX ){
         button.addEventListener('click', functionX);
 }
-//*Funcion encargada de rellena el canvas con el color que quiera el usuario
+
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description Function in charge of filling the canvas with the color that the user wants.
+ */
 function paintCanvas() {        
-        //* Rellenamos todo el canvas con el color seleccionado en la paleta de colores
         if(toolsColor == startColor) {
             toolsColor = 'black';
         }
@@ -206,47 +233,55 @@ function paintCanvas() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-//*Funcion encargda de eliminar el ultimo trazo realizado 
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description Function in charge of deleting the last trace made .
+ */
 function deleteLastStroke(){
-    //* Si solamente hay uno, llama a la funcion limpiar canvas
+    //*If there is only one, call the clear canvas function
     if(index <= 0){
         clearCanvas();
     }else{
-        //*Si hay mas de uno
-        index--;//*Decrece en uno el index
-        restoreArray.pop(); //* Removemos el ultimo elemento del array 
-        ctx.putImageData(restoreArray[index],0,0); //* Restauramos la imagen desde la ultima posicion
+        index--;
+        restoreArray.pop();
+        ctx.putImageData(restoreArray[index],0,0); //* We restore the image from the last position.
     }
 }
 
-//*función encargada de exportar una imagen de un elemento canvas en formato PNG.
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description Function in charge of exporting an image of a canvas element in png format.
+ */
 function exportAsImage() {
-    //* creamos un elemento "a" utilizando document.createElement('a'). Este elemento se usará para descargar la imagen.
     let link = document.createElement('a');
-    link.download = "paint.png";//* establecemos el nombre del archivo de la imagen 
-    link.href = canvas.toDataURL(); //*establecemos la URL de la imagen utilizando la función 
-    link.click();//*Por ultimo,se activa la descarga de la imagen haciendo clic en el elemento "a" utilizando link.click()
+    link.download = "paint.png";//* File name.
+    link.href = canvas.toDataURL(); //* Image url.
+    link.click();
 }
 
-//*Esta funcion se encarga de borrar todo lo que se ah dibujado en el canvas
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description This function is responsible for erasing everything that has been drawn on the canvas.
+ */
 function clearCanvas(){
     ctx.fillStyle = startColor;
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);//* Limpia el canvas borrando todo el contenido del canvas
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);//* Vuelve a dibujar el fondo del canvas con el color de relleno actual.
-    restoreArray = [];//* Reiniciamos el arreglo restoreArray a un arreglo vacío. Este arreglo se utiliza para almacenar el estado del canvas antes de cada cambio, lo que permite al usuario deshacer las acciones anteriores.
-    index = -1; //* Establece el índice actual en -1, lo que indica que no se ha guardado ningún estado en el arreglo restoreArray.
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    restoreArray = [];
+    index = -1;
 }
 
-// * Funcion encargada de cambiar el color de una herramienta
+/**
+ * @author Lautaro Gallo https://github.com/lautarovg02
+ * @description This function is responsible for changing the color of a tool.
+ */
 function changeColorPencil(element){
-    //*Este atributo data-color contiene un valor de color hexadecimal 
-    //* luego establece la variable toolsColor en el valor del atributo data-color 
     let newColor = element.dataset.color;
     toolsColor = newColor;
 }
 
 // * -----------------------------
-// * Entrada principal del proyecto.
+// * The principal entrance of the project.
 // * -----------------------------
 
 function main(){

@@ -38,7 +38,7 @@ class Pen {
          */
         this.style = style;
         /**
-         * 
+         * @type fill - {string}
          */
         this.fill = fill;
     }
